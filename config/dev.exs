@@ -4,7 +4,7 @@ import Config
 config :rumbl, Rumbl.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: "pg.hello.test",
   database: "rumbl_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
