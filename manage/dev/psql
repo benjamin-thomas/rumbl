@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+PGHOST=pg.hello.test PGUSER=postgres PGPASSWORD=postgres PGDATABASE=rumbl_dev exec psql

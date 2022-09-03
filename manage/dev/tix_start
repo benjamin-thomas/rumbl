@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+set -x
+
+MIX_ENV=test exec iex -S mix tix
