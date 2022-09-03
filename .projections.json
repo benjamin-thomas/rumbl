@@ -1,0 +1,14 @@
+{
+  "lib/**/controllers/*_controller.ex": {
+    "type": "controller",
+    "alternate": "lib/{dirname}/views/{basename}_view.ex"
+  },
+  "lib/**/views/*_view.ex": {
+    "type": "view",
+    "alternate": "lib/{dirname}/templates/{basename}/index.html.heex"
+  },
+  "lib/**/templates/*/index.html.heex": {
+    "type": "template",
+    "alternate": "lib/{dirname}/controllers/{basename}_controller.ex"
+  }
+}
