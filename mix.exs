@@ -33,6 +33,7 @@ defmodule Rumbl.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:pbkdf2_elixir, "~> 1.0"},
       {:tix, "~> 0.4.0", only: :test, runtime: false},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.6.11"},
