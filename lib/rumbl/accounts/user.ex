@@ -1,5 +1,12 @@
 defmodule Rumbl.Accounts.User do
-  # @type t :: %Rumbl.Accounts.User{id: String.t(), name: String.t(), username: String.t()}
+  @type t :: %__MODULE__{
+          id: String.t(),
+          name: String.t(),
+          username: String.t(),
+          password: String.t(),
+          password_hash: String.t()
+        }
+
   # defstruct [:id, :name, :username]
 
   use Ecto.Schema
