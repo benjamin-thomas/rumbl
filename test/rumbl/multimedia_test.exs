@@ -35,7 +35,12 @@ defmodule Rumbl.MultimediaTest do
 
     test "update_video/2 with valid data updates the video" do
       video = video_fixture()
-      update_attrs = %{description: "some updated description", title: "some updated title", url: "some updated url"}
+
+      update_attrs = %{
+        description: "some updated description",
+        title: "some updated title",
+        url: "some updated url"
+      }
 
       assert {:ok, %Video{} = video} = Multimedia.update_video(video, update_attrs)
       assert video.description == "some updated description"
