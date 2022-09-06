@@ -6,5 +6,6 @@
         "redrapids",
         "rumbl",
         "Rumbl"
-    ]
+    ],
+    "docsView.documentationView.updateMode": "sticky"
 }

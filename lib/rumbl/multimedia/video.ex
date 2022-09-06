@@ -21,5 +21,6 @@ defmodule Rumbl.Multimedia.Video do
     # That's why `user_id` can't be mentioned here.
     |> cast(attrs, [:url, :title, :description, :category_id])
     |> validate_required([:url, :title, :description])
+    |> assoc_constraint(:category)
   end
 end

@@ -1,7 +1,6 @@
 <h1>Show Video</h1>
 
 <ul>
-
   <li>
     <strong>Url:</strong>
     <%= @video.url %>
@@ -12,12 +11,21 @@
     <%= @video.title %>
   </li>
 
+  <%= if false do %>
+    <!-- I'll see later where preloading is recommended.
+        (I suppose the controller should send an optional param to the context?)
+    -->
+    <li>
+      <strong>Category:</strong>
+      <%= @video.category %>
+    </li>
+  <% end %>
+
   <li>
     <strong>Description:</strong>
     <%= @video.description %>
   </li>
-
 </ul>
 
-<span><%= link "Edit", to: Routes.video_path(@conn, :edit, @video) %></span> |
-<span><%= link "Back", to: Routes.video_path(@conn, :index) %></span>
+<span><%= link("Edit", to: Routes.video_path(@conn, :edit, @video)) %></span> |
+<span><%= link("Back", to: Routes.video_path(@conn, :index)) %></span>

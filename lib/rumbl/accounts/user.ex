@@ -27,6 +27,7 @@ defmodule Rumbl.Accounts.User do
     |> cast(attrs, [:name, :username])
     |> validate_required([:name, :username])
     |> validate_length(:username, min: 1, max: 20)
+    |> unique_constraint(:username)
   end
 
   # The password rules are intentionally weak, as this implementation's focus is being a learning material
