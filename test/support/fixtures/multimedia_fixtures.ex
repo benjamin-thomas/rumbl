@@ -4,19 +4,20 @@ defmodule Rumbl.MultimediaFixtures do
   entities via the `Rumbl.Multimedia` context.
   """
 
+  alias Rumbl.{Multimedia, Accounts}
+
   @doc """
   Generate a video.
   """
-  def video_fixture(attrs \\ %{}) do
-    {:ok, video} =
-      attrs
-      |> Enum.into(%{
-        description: "some description",
+  def video_fixture(%Accounts.User{} = user, attrs \\ %{}) do
+    attrs =
+      Enum.into(attrs, %{
         title: "some title",
-        url: "some url"
+        url: "some url",
+        description: "some description"
       })
-      |> Rumbl.Multimedia.create_video()
 
+    {:ok, video} = Multimedia.create_video(user, attrs)
     video
   end
 end

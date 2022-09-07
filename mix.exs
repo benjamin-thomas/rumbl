@@ -3,6 +3,8 @@ defmodule Rumbl.MixProject do
 
   def project do
     [
+      # run `mix lcov` then inspect in the Koverage vscode pane or run `Coverage Gutters: Display Coverage`
+      test_coverage: [tool: LcovEx, output: "cover"],
       app: :rumbl,
       version: "0.1.0",
       elixir: "~> 1.12",
@@ -33,6 +35,7 @@ defmodule Rumbl.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:lcov_ex, "~> 0.2", only: [:dev, :test], runtime: false},
       {:pbkdf2_elixir, "~> 1.0"},
       {:tix, "~> 0.4.0", only: :test, runtime: false},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},

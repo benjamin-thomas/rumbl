@@ -24,6 +24,9 @@ defmodule Rumbl.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Rumbl.DataCase
+
+      import Rumbl.AccountsFixtures
+      import Rumbl.MultimediaFixtures
     end
   end
 
