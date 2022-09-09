@@ -8,10 +8,24 @@ defmodule RumblWeb.Auth do
 
   def call(conn, _opts) do
     user_id = get_session(conn, :user_id)
-    user = user_id && Rumbl.Accounts.get_user(user_id)
 
     # `assign` is a function imported from Plug.Conn
-    assign(conn, :current_user, user)
+    cond do
+      # Quote from the book:
+      #   If we see that we already have a current_user, we return the connection as-is
+      #   Lets be clear. What we're doing here is controversial. We're adding this code to make
+      #   our implementation more testable. We think the trade-off is worth it. We are *improving the contract*.
+      #   If a user is in the `conn.assigns`, we honor it, no matter how it got there. We have an improved testing
+      #   story that doesn't require us to write mocks.
+      conn.assigns[:current_user] ->
+        conn
+
+      user = user_id && Rumbl.Accounts.get_user(user_id) ->
+        assign(conn, :current_user, user)
+
+      true ->
+        assign(conn, :current_user, nil)
+    end
   end
 
   def login(conn, user) do
