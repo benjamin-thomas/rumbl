@@ -4,7 +4,9 @@ defmodule Rumbl.MixProject do
   def project do
     [
       # run `mix lcov` then inspect in the Koverage vscode pane or run `Coverage Gutters: Display Coverage`
-      test_coverage: [tool: LcovEx, output: "cover"],
+      # Or even better, `mix test --cover` with the config line below.
+      # Or `mix test.watch --cover` but this yields slightly less coverage percentage, not sure why.
+      test_coverage: [tool: LcovEx, output: "cover", ignore_paths: ["test/"]],
       app: :rumbl,
       version: "0.1.0",
       elixir: "~> 1.12",
@@ -35,6 +37,12 @@ defmodule Rumbl.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {
+        :ex_unit_notifier,
+        "~> 1.2",
+        # https://github.com/navinpeiris/ex_unit_notifier/pull/12
+        only: :test, path: "~/code/github.com/benjamin-thomas/ex_unit_notifier"
+      },
       {:lcov_ex, "~> 0.2", only: [:dev, :test], runtime: false},
       {:pbkdf2_elixir, "~> 1.0"},
       {:tix, "~> 0.4.0", only: :test, runtime: false},

@@ -1,19 +1,9 @@
 # Rumbl
 
-To start your Phoenix server:
+Reading the book `Programming Phoenix >= 1.4`
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Dev workflow
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- `mix phx.server` or `iex -S mix phx.server`
+- `./manage/dev/tix_start` (faster testing feedback)
+- `mix test.watch --cover` (then in vscode go to `Testing > COVERAGE`)
