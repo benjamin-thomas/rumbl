@@ -30,5 +30,6 @@ config :logger, level: :warn
 config :phoenix, :plug_init_mode, :runtime
 
 # Note: Do not use this value in production
-config :pbkdf2_elixir,
-  rounds: 1
+config :pbkdf2_elixir, rounds: 1
+
+config :ex_unit_notifier, notifier: ExUnitNotifier.Notifiers.TmuxNotifier

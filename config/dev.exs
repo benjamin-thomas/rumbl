@@ -73,3 +73,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# https://github.com/lpil/mix-test.watch#clearing-the-console-before-each-run
+config :mix_test_watch, clear: true
