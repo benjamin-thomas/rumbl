@@ -5,7 +5,8 @@
         "josevalim",
         "redrapids",
         "rumbl",
-        "Rumbl"
+        "Rumbl",
+        "youtu"
     ],
     "docsView.documentationView.updateMode": "sticky"
 }
