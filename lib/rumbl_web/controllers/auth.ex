@@ -21,7 +21,7 @@ defmodule RumblWeb.Auth do
         conn
 
       user = user_id && Rumbl.Accounts.get_user(user_id) ->
-        assign(conn, :current_user, user)
+        put_current_user(conn, user)
 
       true ->
         assign(conn, :current_user, nil)
@@ -30,7 +30,7 @@ defmodule RumblWeb.Auth do
 
   def login(conn, user) do
     conn
-    |> assign(:current_user, user)
+    |> put_current_user(user)
     |> put_session(:user_id, user.id)
     # This next line protects from session fixation attacks
     |> configure_session(renew: true)
@@ -51,5 +51,13 @@ defmodule RumblWeb.Auth do
       |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
     end
+  end
+
+  defp put_current_user(conn, user) do
+    token = Phoenix.Token.sign(conn, "user socket", user.id)
+
+    conn
+    |> assign(:current_user, user)
+    |> assign(:user_token, token)
   end
 end
