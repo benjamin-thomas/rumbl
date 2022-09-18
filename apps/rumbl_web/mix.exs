@@ -37,6 +37,9 @@ defmodule RumblWeb.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      # Allow RumblWeb to reach into Rumbl
+      {:rumbl, in_umbrella: true},
+      # Framework dependencies
       {:phoenix, "~> 1.6.11"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.0"},
@@ -48,7 +51,6 @@ defmodule RumblWeb.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
-      {:rumbl, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"}
     ]
