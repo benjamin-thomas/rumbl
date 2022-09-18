@@ -1,5 +1,5 @@
 defmodule RumblWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :rumbl
+  use Phoenix.Endpoint, otp_app: :rumbl_web
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -19,7 +19,7 @@ defmodule RumblWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :rumbl,
+    from: :rumbl_web,
     gzip: false,
     only: ~w(assets fonts images favicon.ico robots.txt)
 
