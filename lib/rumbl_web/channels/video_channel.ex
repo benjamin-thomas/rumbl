@@ -6,11 +6,11 @@ defmodule RumblWeb.VideoChannel do
 
   @impl true
   def join("videos:" <> video_id, params, socket) do
-    # || 0
+    send(self(), :after_join)
     last_seen_id = params["last_seen_id"]
     # socket = assign(socket, :video_id, String.to_integer(video_id))
     video_id = String.to_integer(video_id)
-    # video = Multimedia.get_video!(video_id)
+    # video = Multimedia.get_video!(video_id) # that would generate an extra SQL request
     video = %Multimedia.Video{id: video_id}
 
     annotations =
@@ -20,6 +20,13 @@ defmodule RumblWeb.VideoChannel do
 
     # :timer.send_interval(5000, :ping)
     {:ok, %{annotations: annotations}, assign(socket, :video_id, video_id)}
+  end
+
+  @impl true
+  def handle_info(:after_join, socket) do
+    push(socket, "presence_state", RumblWeb.Presence.list(socket))
+    {:ok, _} = RumblWeb.Presence.track(socket, socket.assigns.user_id, %{device: "browser"})
+    {:noreply, socket}
   end
 
   # @impl true
