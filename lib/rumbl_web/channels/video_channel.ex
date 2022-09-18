@@ -1,12 +1,25 @@
 defmodule RumblWeb.VideoChannel do
   use RumblWeb, :channel
 
+  alias Rumbl.{Accounts, Multimedia}
+  alias RumblWeb.AnnotationView
+
   @impl true
-  def join("videos:" <> video_id, _params, socket) do
-    socket = assign(socket, :video_id, String.to_integer(video_id))
+  def join("videos:" <> video_id, params, socket) do
+    # || 0
+    last_seen_id = params["last_seen_id"]
+    # socket = assign(socket, :video_id, String.to_integer(video_id))
+    video_id = String.to_integer(video_id)
+    # video = Multimedia.get_video!(video_id)
+    video = %Multimedia.Video{id: video_id}
+
+    annotations =
+      video
+      |> Multimedia.list_annotations(last_seen_id)
+      |> Phoenix.View.render_many(AnnotationView, "annotation.json")
 
     # :timer.send_interval(5000, :ping)
-    {:ok, socket}
+    {:ok, %{annotations: annotations}, assign(socket, :video_id, video_id)}
   end
 
   # @impl true
@@ -20,13 +33,25 @@ defmodule RumblWeb.VideoChannel do
   # end
 
   @impl true
-  def handle_in("new_annotation", params, socket) do
-    broadcast!(socket, "new_annotation", %{
-      user: %{username: "anon"},
-      body: params["body"],
-      at: params["at"]
-    })
+  def handle_in(event, params, socket) do
+    user = Accounts.get_user!(socket.assigns.user_id)
+    handle_in(event, params, user, socket)
+  end
 
-    {:reply, :ok, socket}
+  def handle_in("new_annotation", params, user, socket) do
+    case Multimedia.annotate_video(user, socket.assigns.video_id, params) do
+      {:ok, annotation} ->
+        broadcast!(socket, "new_annotation", %{
+          id: annotation.id,
+          user: RumblWeb.UserView.render("user.json", %{user: user}),
+          body: annotation.body,
+          at: annotation.at
+        })
+
+        {:reply, :ok, socket}
+
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: changeset}}, socket}
+    end
   end
 end
