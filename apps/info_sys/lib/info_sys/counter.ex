@@ -1,40 +1,50 @@
 defmodule InfoSys.Counter do
-  # `inc` and `dec` are asynchronous, meaning we send a message without waiting for a reply
-  def inc(pid), do: send(pid, :inc)
-  def dec(pid), do: send(pid, :dec)
+  use GenServer
 
-  # We create a unique reference with `make_ref`. This allows associating the current request with the future response.
-  # We then block with `receive`, waiting for this ref to come back with the latest state (val)
-  # Or timeout if blocking takes too long
-  def val(pid, timeout \\ 5000) do
-    ref = make_ref()
-    send(pid, {:val, self(), ref})
+  @doc """
+  Quoted form the book
+  When we want to send async messages, we use `GenServer.cast`. Those functions don't send a reply.
 
-    receive do
-      {^ref, val} ->
-        val
-    after
-      timeout -> exit(:timeout)
-    end
+  When we want to send sync messages that return server state, we use `GenServer.call`
+
+  GenServer advantages:
+
+    - We don't need to setup refs for sending and receiving sync messages.
+    - The GenServer controls the receive loop, enabling:
+      - code upgrading
+      - handling of system messages
+  """
+
+  #
+  # PUBLIC API / CLIENT CODE
+  #
+  def inc(pid), do: GenServer.cast(pid, :inc)
+  def dec(pid), do: GenServer.cast(pid, :dec)
+
+  def val(pid) do
+    GenServer.call(pid, :val)
   end
 
   def start_link(initial_val) do
-    {:ok, spawn_link(fn -> listen(initial_val) end)}
+    GenServer.start_link(__MODULE__, initial_val)
   end
 
-  # While `inc`, `dec` and `val` represent our public API **interface**,
-  # `listen` represents our internal API **implementation**
-  defp listen(val) do
-    receive do
-      :inc ->
-        listen(val + 1)
+  #
+  # IMPLEMENTATION / SERVER CODE
+  #
+  def init(initial_val) do
+    {:ok, initial_val}
+  end
 
-      :dec ->
-        listen(val - 1)
+  def handle_cast(:inc, val) do
+    {:noreply, val + 1}
+  end
 
-      {:val, sender, ref} ->
-        send(sender, {ref, val})
-        listen(val)
-    end
+  def handle_cast(:dec, val) do
+    {:noreply, val - 1}
+  end
+
+  def handle_call(:val, _from, val) do
+    {:reply, val, val}
   end
 end
