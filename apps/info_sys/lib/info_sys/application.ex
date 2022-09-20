@@ -10,7 +10,9 @@ defmodule InfoSys.Application do
     children = [
       # Starts a worker by calling: InfoSys.Worker.start_link(arg)
       # {InfoSys.Worker, arg}
-      {InfoSys.Counter, 5}
+      Supervisor.child_spec({InfoSys.Counter, 15}, id: :long),
+      Supervisor.child_spec({InfoSys.Counter, 5}, id: :short),
+      Supervisor.child_spec({InfoSys.Counter, 10}, id: :medium)
       # {InfoSys.CounterNonOtp, 0} # needs a "child spec" to start
     ]
 
