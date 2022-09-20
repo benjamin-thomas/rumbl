@@ -8,6 +8,8 @@ defmodule InfoSys.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      InfoSys.Cache,
+      {Task.Supervisor, name: InfoSys.TaskSupervisor}
       # {InfoSys.CounterAgent, 0},
       # Supervisor.child_spec({InfoSys.Counter, 15}, id: :long),
       # Supervisor.child_spec({InfoSys.Counter, 5}, id: :short),
