@@ -74,5 +74,13 @@ config :phoenix, :plug_init_mode, :runtime
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# https://github.com/lpil/mix-test.watch#clearing-the-console-before-each-run
-config :mix_test_watch, clear: true
+wolfram_app_id =
+  System.get_env("WOLFRAM_APP_ID") ||
+    raise """
+    Missing required env var: WOLFRAM_APP_ID
+
+    Run at the project root:
+      set -a; source .env; set +a
+    """
+
+config :info_sys, :wolfram, app_id: wolfram_app_id

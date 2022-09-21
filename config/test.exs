@@ -33,3 +33,6 @@ config :phoenix, :plug_init_mode, :runtime
 config :pbkdf2_elixir, rounds: 1
 
 config :ex_unit_notifier, notifier: ExUnitNotifier.Notifiers.TmuxNotifier
+
+# https://github.com/lpil/mix-test.watch#clearing-the-console-before-each-run
+config :mix_test_watch, clear: true
