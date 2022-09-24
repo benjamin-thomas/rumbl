@@ -1,4 +1,6 @@
 defmodule InfoSys do
+  alias InfoSys.Cache
+
   @backends [InfoSys.Wolfram]
 
   defmodule Result do
@@ -11,8 +13,10 @@ defmodule InfoSys do
     opts = Keyword.put_new(opts, :limit, 10)
     backends = opts[:backends] || @backends
 
+    {uncached_backends, cached_results} = fetch_cached_results(backends, query, opts)
+
     # Send work to the backend
-    backends
+    uncached_backends
     |> Enum.map(&async_query(&1, query, opts))
     # `yield_many` blocks
     |> Task.yield_many(timeout)
@@ -25,8 +29,54 @@ defmodule InfoSys do
       # match error tuple or nil from timeouts
       _ -> []
     end)
+    |> write_results_to_cache(query, opts)
+    |> Kernel.++(cached_results)
     |> Enum.sort(&(&1.score >= &2.score))
     |> Enum.take(opts[:limit])
+  end
+
+  # It looks like this is what's going on:
+  #
+  # iex(1)> [[1,2,3] | [4]]
+  # [[1, 2, 3], 4]
+  # iex(2)> List.flatten([[1,2,3] | [4]])
+  # [1, 2, 3, 4]
+  # iex(3)> List.flatten([[0] | [1,2,3]])
+  # [0, 1, 2, 3]
+  # iex(4)> List.flatten([[0] | [1,2,3]])
+  # [0, 1, 2, 3]
+  #
+  #
+  # I find it a little strange since we could do away with the flatting as such:
+  #
+  # iex(5)> [0] ++ [1,2,3]
+  # [0, 1, 2, 3]
+  # iex(6)> [1,2,3] ++ [4]
+  # [1, 2, 3, 4]
+  #
+  # I suppose the book authors chose to use the first technique for performance/efficiency reasons.
+  defp fetch_cached_results(backends, query, opts) do
+    {uncached_backends, results} =
+      Enum.reduce(
+        backends,
+        {[], []},
+        fn backend, {uncached_backends, acc_results} ->
+          case Cache.fetch({backend.name(), query, opts[:limit]}) do
+            {:ok, results} -> {uncached_backends, [results | acc_results]}
+            :error -> {[backend | uncached_backends], acc_results}
+          end
+        end
+      )
+
+    {uncached_backends, List.flatten(results)}
+  end
+
+  defp write_results_to_cache(results, query, opts) do
+    Enum.map(results, fn %Result{backend: backend} = result ->
+      :ok = Cache.put({backend.name(), query, opts[:limit]}, result)
+
+      result
+    end)
   end
 
   # `async_nolink` spawns a new task, isolated from our caller.
