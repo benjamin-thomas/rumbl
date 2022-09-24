@@ -39,6 +39,7 @@ defmodule RumblWeb.MixProject do
     [
       # Allow RumblWeb to reach into Rumbl
       {:rumbl, in_umbrella: true},
+      {:info_sys, in_umbrella: true},
       # Framework dependencies
       {:phoenix, "~> 1.6.11"},
       {:phoenix_ecto, "~> 4.4"},
