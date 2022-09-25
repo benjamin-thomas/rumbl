@@ -3,9 +3,9 @@
 # mix test.watch does not use the tmux notifier since I switch to an umbrella design.
 
 function color_pane() {
-    COLOR=$1 # "green" or "red"
+    COLOR=$1 # Mostly "green" or "red"
     tmux set-window-option -t"$TMUX_PANE" window-status-style bg=$COLOR
 }
 
 export -f color_pane
-exec rg --files | entr bash -c "mix test && color_pane green || color_pane red"
+exec rg --files | entr bash -c "color_pane yellow && mix test && color_pane green || color_pane red"
