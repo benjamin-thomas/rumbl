@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# mix test.watch does not use the tmux notifier since I switch to an umbrella design.
+exec rg --files | entr bash -c 'mix test && tmux set-window-option -t"$TMUX_PANE" window-status-style bg=green || tmux set-window-option -t"$TMUX_PANE" window-status-style bg=red'
