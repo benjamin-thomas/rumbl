@@ -5,6 +5,7 @@ defmodule InfoSys.Wolfram do
 
   @behaviour InfoSys.Backend
 
+  @http Application.get_env(:info_sys, :wolfram)[:http_client] || :httpc
   @base "https://api.wolframalpha.com/v2/query"
 
   @impl true
@@ -38,8 +39,8 @@ defmodule InfoSys.Wolfram do
     # Which I don't want to see. I found the HTTP client API documentation confusing
     # so this is my best option for now
     # NOTE: it's an improvement over straight HTTP anyways
-    :httpc.set_options(socket_opts: [verify: :verify_none])
-    {:ok, {_, _, body}} = :httpc.request(String.to_charlist(url(query)))
+    @http.set_options(socket_opts: [verify: :verify_none])
+    {:ok, {_, _, body}} = @http.request(String.to_charlist(url(query)))
 
     body
   end

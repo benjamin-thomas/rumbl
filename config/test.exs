@@ -36,3 +36,7 @@ config :ex_unit_notifier, notifier: ExUnitNotifier.Notifiers.TmuxNotifier
 
 # https://github.com/lpil/mix-test.watch#clearing-the-console-before-each-run
 config :mix_test_watch, clear: true
+
+config :info_sys, :wolfram,
+  app_id: "123",
+  http_client: InfoSys.Test.HttpClient
