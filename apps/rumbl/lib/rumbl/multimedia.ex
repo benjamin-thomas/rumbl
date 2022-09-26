@@ -139,6 +139,8 @@ defmodule Rumbl.Multimedia do
   end
 
   def list_annotations(%Video{} = video, since_id \\ 0) do
+    since_id = since_id || 0
+
     Repo.all(
       from a in Ecto.assoc(video, :annotations),
         where: a.id > ^since_id,
