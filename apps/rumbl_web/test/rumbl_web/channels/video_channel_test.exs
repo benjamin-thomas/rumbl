@@ -22,6 +22,35 @@ defmodule RumblWeb.VideoChannelTest do
     # Match part of the reply struct!
     assert %{annotations: [%{body: "one"}, %{body: "two"}]} = reply
 
+    release_presence_db_conns()
+  end
+
+  test "inserting new annotations", %{socket: socket, video: video} do
+    {:ok, _, socket} = subscribe_and_join(socket, "videos:#{video.id}", %{})
+    ref = push(socket, "new_annotation", %{body: "the body", at: 0})
+    assert_reply ref, :ok, %{}
+    assert_broadcast "new_annotation", %{}
+
+    release_presence_db_conns()
+  end
+
+  test "new annotations triggers InfoSys", %{socket: socket, video: video} do
+    insert_user(
+      username: "wolfram",
+      password: "supersecret"
+    )
+
+    {:ok, _, socket} = subscribe_and_join(socket, "videos:#{video.id}", %{})
+    ref = push(socket, "new_annotation", %{body: "1 + 1", at: 123})
+
+    assert_reply ref, :ok, %{}
+    assert_broadcast "new_annotation", %{body: "1 + 1", at: 123}
+    assert_broadcast "new_annotation", %{body: "2", at: 123}
+
+    release_presence_db_conns()
+  end
+
+  defp release_presence_db_conns do
     # Source: https://hexdocs.pm/phoenix/Phoenix.Presence.html
     # Testing with Presence
     #
@@ -38,7 +67,7 @@ defmodule RumblWeb.VideoChannelTest do
     # So to sum up I *do* need this exit block, combined with a quirky timeout at the beginning of the exit block, whew!
     on_exit(fn ->
       # Nasty bug: https://github.com/phoenixframework/phoenix/issues/3619
-      :timer.sleep(1)
+      :timer.sleep(10)
 
       for pid <- RumblWeb.Presence.fetchers_pids() do
         ref = Process.monitor(pid)
